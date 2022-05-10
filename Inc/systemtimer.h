@@ -6,7 +6,7 @@
  *      Version	->	'1.0a1'	(В разработке, только для внутреннего использования)
  */
 
-#include <stdio.h>
+#include <stdint.h>
 #include <stm32f4xx.h>
 #include <system_stm32f4xx.h>
 
@@ -17,7 +17,6 @@
 /*** Timers codes ***/
 
 #define ERROR_LED_TIMER		0
-
 
 /* End timers codes */
 

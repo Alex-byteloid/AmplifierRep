@@ -19,7 +19,7 @@
 
 #define NOT_ACTIVE			'0'
 #define SET_BUT_NOT_ACTIVE	'1'
-#define ACTIVE					'2'
+#define ACTIVE_MSG			'2'
 
 /**********************************/
 
@@ -45,7 +45,7 @@ void Send_message (uint16_t Msg){
 }
 
 uint8_t Get_message (uint16_t Msg){
-	if (Message[Msg] == ACTIVE){
+	if (Message[Msg] == ACTIVE_MSG){
 		Message[Msg] = NOT_ACTIVE;
 		return 1;
 	}
@@ -54,7 +54,7 @@ uint8_t Get_message (uint16_t Msg){
 
 void Process_message(void){
 	for(uint32_t i = 0; i < MAX_NUMBER_MSG; i++){
-		if (Message[i] == ACTIVE) Message[i] = NOT_ACTIVE;
-		if (Message[i] == SET_BUT_NOT_ACTIVE) Message[i] = ACTIVE;
+		if (Message[i] == ACTIVE_MSG) Message[i] = NOT_ACTIVE;
+		if (Message[i] == SET_BUT_NOT_ACTIVE) Message[i] = ACTIVE_MSG;
 	}
 }

@@ -7,11 +7,16 @@
  *
  */
 
+#include <stdint.h>
+#include <stm32f4xx.h>
+#include <system_stm32f4xx.h>
+#include <message.h>
+#include <systemtimer.h>
 
 /************* Define *************/
 
 /*** Message codes ***/
-
+// START_MK_CLOCK_INIT
 /* End message codes */
 
 /**********************************/

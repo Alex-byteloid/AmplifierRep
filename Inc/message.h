@@ -14,8 +14,7 @@
 
 /*** Message codes ***/
 
-#define ERROR_LED_TIMER		0
-#define LCD_TIMER				1
+#define START_MK_CLOCK_INIT		0
 
 /* End message codes */
 
