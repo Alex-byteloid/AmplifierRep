@@ -18,6 +18,8 @@
 int main(void)
 {
 
+	Init_sys_tick_timer();
+	Init_g_timers();
 	Init_message();
 
     /* Loop forever */
