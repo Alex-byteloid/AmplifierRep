@@ -11,7 +11,6 @@
 
 #include <stm32f4xx.h>
 #include <system_stm32f4xx.h>
-#include <message.h>
 
 
 /************* Define *************/
@@ -21,9 +20,29 @@
 
 /************* Global Variables ***********/
 
+static int8_t SysInitState;
+static int8_t _SysInitState;
+static int8_t entrySysInit;
+
 /******************************************/
 
 
 /************* Function ***********/
 
 
+void Process_initialization (void){
+
+	if (_SysInitState != SysInitState)
+		entrySysInit = 1;
+	else entrySysInit = 0;
+
+	_SysInitState = SysInitState;
+
+	switch (SysInitState) {
+		case 0:
+
+			break;
+		default:
+			break;
+	}
+}
