@@ -28,3 +28,6 @@
 
 
 /************* Function ***********/
+
+void Init_sys_init_FSM (void);
+void Process_initialization_FSM (void);
