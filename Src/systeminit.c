@@ -148,16 +148,25 @@ void Process_initialization_FSM (void){
 			PWR->CR &= ~PWR_CR_VOS;
 			PWR->CR |= PWR_CR_VOS_1;									// 'Voltage scaling -> Scale 2'
 
-			/* Инициализация порта для работы индикатора неисправностей */
-			RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN;
+			/* Инициализация порта для работы индикаторов неисправностей */
+			RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN;						// Включение тактирования порта 'C'
+
 			GPIOC->OTYPER &= ~GPIO_OTYPER_OT13;							// Настройка порта 'PC13' на выход push-pull
-			GPIOC->OSPEEDR &= ~GPIO_OSPEEDER_OSPEEDR13;
-			GPIOC->OSPEEDR |= GPIO_OSPEEDER_OSPEEDR13;					// Настройка на высокую выходную скорость
-			GPIOC->PUPDR &= ~GPIO_PUPDR_PUPD13;							// 'No pull, no down' (без подтяжки к плюсу или минусу питания)
-			GPIOC->MODER &= ~GPIO_MODER_MODE13;
+			GPIOC->OSPEEDR &= ~GPIO_OSPEEDER_OSPEEDR13;					// Настройка на низкую выходную скорость
+			GPIOC->PUPDR &= ~GPIO_PUPDR_PUPD13;							// 'No pull up; No pull down' (Без подтяжки к питанию; земле)
 			GPIOC->MODER |= GPIO_MODER_MODE13_0;						// Настройка порта 'PC13' на выход
 			GPIOC->BSRR |= GPIO_BSRR_BS13;								// Выключение индикатора на 'PC13'
-			/* Конец инициализации индикатора */
+#ifndef MCO1
+			RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;						// Включение тактирования портов A
+
+			GPIOA->OTYPER &= ~GPIO_OTYPER_OT8;							// Настройка порта 'PA8' на выход push-pull
+			GPIOA->OSPEEDR &= ~GPIO_OSPEEDER_OSPEEDR8;					// Настройка на низкую выходную скорость
+			GPIOA->PUPDR &= ~GPIO_PUPDR_PUPD8;							// 'No pull up; No pull down' (Без подтяжки к питанию; земле)
+			GPIOA->PUPDR |= GPIO_PUPDR_PUPD8_0;
+			GPIOA->MODER |= GPIO_MODER_MODE8_0;							// Настройка порта 'PA8' на выход
+			GPIOA->BSRR |= GPIO_BSRR_BR8;								// Выключение индикатора на 'PA8'
+#endif
+			/* Конец инициализации индикаторов */
 
 			SystemCoreClockUpdate();									// Обновление значения переменной частоты системной шины
 			sysInitState = 3;											// При успешной инициализации перифирии переход в состояние '3'
@@ -176,18 +185,34 @@ void Process_initialization_FSM (void){
 
 				Init_sys_tick_timer();
 				Init_g_timers();
+
 			}
+			/* Индикация работы МК */
 			if(Get_g_timer_val(ERROR_LED_TIMER) == 0){
 				GPIOC->BSRR |= GPIO_BSRR_BR13;
 				Start_g_timer(ERROR_LED_TIMER);
 			}
-			if(Get_g_timer_val(ERROR_LED_TIMER) >= 400)
+			if(Get_g_timer_val(ERROR_LED_TIMER) >= 400){
 				GPIOC->BSRR |= GPIO_BSRR_BS13;
-			if(Get_g_timer_val(ERROR_LED_TIMER) >= 1100)
+			}
+			if(Get_g_timer_val(ERROR_LED_TIMER) >= 1000)
 				Stop_g_timer(ERROR_LED_TIMER);
+			/* Конец индикации работы МК */
 			break;
 
 		default:
 			break;
 	}
+}
+
+void Enable_error_led (void){
+#ifndef MCO1
+	GPIOA->BSRR |= GPIO_BSRR_BS8;
+	#endif
+}
+
+void Disable_error_led (void){
+#ifndef MCO1
+	GPIOA->BSRR |= GPIO_BSRR_BR8;
+	#endif
 }
